@@ -24,7 +24,56 @@ app.controller('todoCtrl', ['$scope', function($scope) {
    }
 
     // Add an item function
-    $scope.todoAdd = function() {
-      console.log($scope.todoInput);
+    $scope.todoAdd = function(formData){
+      // all form data
+      console.log(formData);
+
+      // only todoInput data
+      console.log(formData.todoInput);
+
+      // assign todoInput form data into a variable
+      var todoInput = formData.todoInput;
+
+      //check to see if text has been entered, if is empty, exit this function
+      if (todoInput == null || todoInput == ''){return;}
+
+      //if there is text, add it to the array (list inside the view)
+      $scope.todoList.push({todoText:todoInput, done:false});
+
+      //clear the textbox
+      document.getElementById('todoInput').value = "";
+
+      //resave the list to localstorage
+      localStorage.setItem("mytodos", angular.toJson($scope.todoList));
+
     };
+
+    //The update function waits 100ms to store the data in local storage
+    $scope.update = function(x) {
+      // x = an item from todoList array inside the view
+      // console which item is being clicked
+      console.log(x.todoText);
+
+      //update local storage 100 ms after the checkbox is clicked to allow it to process
+      setTimeout(function(){
+        localStorage.setItem("mytodos", angular.toJson($scope.todoList));
+      },100)
+    };
+
+    $scope.remove = function() {
+      //copy list
+      var oldList = $scope.todoList;
+      //clear list
+      $scope.todoList = [];
+      //cycle through list
+      angular.forEach(oldList, function(x) {
+        //add any non-done items to todo list
+        if (!x.done) {
+          $scope.todoList.push(x);
+        }
+      });
+      //update local storage
+      localStorage.setItem("mytodos", angular.toJson($scope.todoList));
+    };
+
 }]);
