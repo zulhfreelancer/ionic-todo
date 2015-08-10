@@ -3,9 +3,9 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic'])
+var app = angular.module('myApp', ['ionic']);
 
-.run(function($ionicPlatform) {
+app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -16,4 +16,20 @@ angular.module('starter', ['ionic'])
       StatusBar.styleDefault();
     }
   });
-})
+});
+
+app.controller('todoCtrl', ['$scope', function($scope) {
+    //if local storage is null save the todolist to local storage
+   if (localStorage.getItem("mytodos") == null){
+      $scope.todoList = [ {todoText:'Create app', done:false} ];
+      localStorage.setItem("mytodos", angular.toJson($scope.todoList));
+    } else {
+    //get the todolist from local storage
+      $scope.todoList = angular.fromJson(localStorage.getItem("mytodos"));
+   }
+
+    // Add an item function
+    $scope.todoAdd = function() {
+      console.log($scope.todoInput);
+    };
+}]);
